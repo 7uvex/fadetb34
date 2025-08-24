@@ -1,21 +1,18 @@
--- ========= fade.cc | Execution Key Gate (paste at TOP of the script) =========
+-- ========= fade.cc | Execution Key Gate (green unlock) =========
 do
-    -- always prompt every run (no caching)
     local VALID_KEYS = {
         freefadecc78 = true, freefadeokok = true, damnwefade = true, slatplayboibunnies = true,
         zooweeeeeemama = true, gottemok = true, keymeeeboy = true, randownonnaoppok = true,
         shebadigetit = true, flex2hard = true, damnluhguy = true, movingrovintootin = true,
     }
 
-    -- If a previous gate from another include exists, make a fresh one anyway.
     local gateEvent = Instance.new("BindableEvent")
     getgenv().FADE_EXEC_GATE = { passed = false, wait = function() gateEvent.Event:Wait() end }
 
-    local Players     = game:GetService("Players")
-    local StarterGui  = game:GetService("StarterGui")
-    local LP          = Players.LocalPlayer
+    local Players    = game:GetService("Players")
+    local StarterGui = game:GetService("StarterGui")
+    local LP         = Players.LocalPlayer
 
-    -- tiny UI (independent of Rayfield to avoid Rayfield key caching)
     local gui = Instance.new("ScreenGui")
     gui.Name = "fade_key_gate"
     gui.ResetOnSpawn = false
@@ -26,14 +23,12 @@ do
     local frame = Instance.new("Frame")
     frame.AnchorPoint = Vector2.new(0.5, 0.5)
     frame.Position = UDim2.new(0.5, 0, 0.5, 0)
-    frame.Size = UDim2.new(0, 380, 0, 180)
+    frame.Size = UDim2.new(0, 380, 0, 160)
     frame.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
     frame.BorderSizePixel = 0
     frame.Parent = gui
 
-    local uiCorner = Instance.new("UICorner")
-    uiCorner.CornerRadius = UDim.new(0, 12)
-    uiCorner.Parent = frame
+    Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 12)
 
     local title = Instance.new("TextLabel")
     title.BackgroundTransparency = 1
@@ -58,10 +53,7 @@ do
     box.BackgroundColor3 = Color3.fromRGB(28, 28, 28)
     box.BorderSizePixel = 0
     box.Parent = frame
-
-    local boxCorner = Instance.new("UICorner")
-    boxCorner.CornerRadius = UDim.new(0, 8)
-    boxCorner.Parent = box
+    Instance.new("UICorner", box).CornerRadius = UDim.new(0, 8)
 
     local submit = Instance.new("TextButton")
     submit.Size = UDim2.new(1, -20, 0, 40)
@@ -70,30 +62,15 @@ do
     submit.TextSize = 16
     submit.Font = Enum.Font.GothamBold
     submit.TextColor3 = Color3.fromRGB(255,255,255)
-    submit.BackgroundColor3 = Color3.fromRGB(34, 139, 230)
+    submit.BackgroundColor3 = Color3.fromRGB(34, 200, 90) -- green button
     submit.BorderSizePixel = 0
     submit.AutoButtonColor = true
     submit.Parent = frame
-
-    local subCorner = Instance.new("UICorner")
-    subCorner.CornerRadius = UDim.new(0, 8)
-    subCorner.Parent = submit
-
-    local hint = Instance.new("TextLabel")
-    hint.BackgroundTransparency = 1
-    hint.Size = UDim2.new(1, -20, 0, 16)
-    hint.Position = UDim2.new(0, 10, 1, -72)
-    hint.Font = Enum.Font.Gotham
-    hint.TextSize = 12
-    hint.TextColor3 = Color3.fromRGB(180, 180, 180)
-    hint.Text = "Keys: freefadecc78, freefadeokok, … (any of your whitelisted keys)"
-    hint.TextXAlignment = Enum.TextXAlignment.Left
-    hint.Parent = frame
+    Instance.new("UICorner", submit).CornerRadius = UDim.new(0, 8)
 
     local function accept()
         local key = (box.Text or ""):lower():gsub("%s+", "")
         if VALID_KEYS[key] then
-            -- notify + 8 second wait before allowing the rest of the script
             pcall(function()
                 StarterGui:SetCore("SendNotification", {
                     Title = "script loading..",
@@ -107,20 +84,9 @@ do
                 getgenv().FADE_EXEC_GATE.passed = true
                 gateEvent:Fire()
             end)
-            -- optional “second” notice (matches your style)
-            task.delay(8, function()
-                pcall(function()
-                    StarterGui:SetCore("SendNotification", {
-                        Title = "❗",
-                        Text = "fade.cc is loading, please wait for the gui to show. enjoy!",
-                        Duration = 8,
-                        Button1 = "Got it"
-                    })
-                end)
-            end)
         else
             submit.Text = "Invalid key — try again"
-            task.delay(0.9, function() if submit then submit.Text = "Unlock" end end)
+            task.delay(1.2, function() if submit then submit.Text = "Unlock" end end)
         end
     end
 
@@ -133,10 +99,10 @@ do
         end
     end)
 
-    -- HARD STOP here: do not proceed until the gate passes
     getgenv().FADE_EXEC_GATE.wait()
 end
 -- ========= end key gate =======================================================
+
 
 --[[
 	WARNING: Heads up! This script has not been verified by ScriptBlox. Use at your own risk!
